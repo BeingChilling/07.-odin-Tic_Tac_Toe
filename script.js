@@ -59,7 +59,7 @@ const putDownPiece = function (x, y) {
   // ? So how to make this transition?
   // * First hard code, then study.
   if (x === 0 && y === 0) {
-    board[2][0] = activePlayer.piece;
+    board[2][0] = activePlayer.piece; // ^ AI directly used the player array.
   } else if (x === 1 && y === 0) {
     board[2][1] = activePlayer.piece;
   } else if (x === 2 && y === 0) {
