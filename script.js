@@ -58,32 +58,24 @@ const putDownPiece = function (x, y) {
   // means row 0, column 2 is (3,3)
   // ? So how to make this transition?
   // * First hard code, then study.
-  if (x === 0 && y === 0) {
-    board[2][0] = activePlayer.piece; // ^ AI directly used the player array.
-  } else if (x === 1 && y === 0) {
-    board[2][1] = activePlayer.piece;
-  } else if (x === 2 && y === 0) {
-    board[2][2] = activePlayer.piece;
-  } else if (x === 0 && y === 1) {
-    board[1][0] = activePlayer.piece;
-  } else if (x === 1 && y === 1) {
-    board[1][1] = activePlayer.piece;
-  } else if (x === 2 && y === 1) {
-    board[1][2] = activePlayer.piece;
-  } else if (x === 0 && y === 2) {
-    board[0][0] = activePlayer.piece;
-  } else if (x === 1 && y === 2) {
-    board[0][1] = activePlayer.piece;
-  } else if (x === 2 && y === 2) {
-    board[0][2] = activePlayer.piece;
+
+  // ^ This one is even better.
+  // Check if the position is within the board's bounds
+  if (x >= 0 && x < 3 && y >= 0 && y < 3) {
+    // Check if the position is empty before placing the piece
+    if (board[x][y] === 0) {
+      board[x][y] = activePlayer.piece;
+      // Switch players
+      activePlayer = activePlayer === player[0] ? player[1] : player[0];
+      console.log(`currently is ${activePlayer.name}'s turn`);
+    } else {
+      console.log("This position is already occupied. Try another position.");
+    }
   } else {
     console.log(
       "Invalid position. Please enter valid coordinates within the board."
     );
-    return;
   }
-  activePlayer = activePlayer === player[0] ? player[1] : player[0];
-  console.log(`currently is ${activePlayer.name}'s turn`);
 };
 
 // ~ Player1 do things. Toggle player. Player2 do things.
