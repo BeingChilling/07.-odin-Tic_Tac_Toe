@@ -1,0 +1,15 @@
+.board {
+  border: 1px solid #000000;
+  border-collapse: collapse;
+}
+
+.cell {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #000;
+  text-align: center;
+}
+
+.cell:hover {
+  background-color: aqua;
+}
