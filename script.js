@@ -1,15 +1,25 @@
 "use strict";
 
-let board = [];
-
-for (let i = 0; i < 3; i++) {
-  let row = [];
-  board.push(row);
-  for (let j = 0; j < 3; j++) {
-    let cell = 0;
-    row.push(cell);
+// / Add grid cell into board directly?
+let boardArray = [];
+const initializeBoard = (function () {
+  let boardHTML = document.querySelector(".board");
+  for (let i = 0; i < 3; i++) {
+    const row = document.createElement("tr");
+    const arrayRow = [];
+    row.classList.add("row");
+    boardHTML.appendChild(row);
+    boardArray.push(arrayRow);
+    for (let j = 0; j < 3; j++) {
+      const cell = document.createElement("td");
+      const arrayCell = 0;
+      cell.classList.add("cell");
+      cell.setAttribute("id", `cell-${i}-${j}`);
+      row.appendChild(cell);
+      arrayRow.push(arrayCell);
+    }
   }
-}
+})();
 
 const player1 = {
   name: "player1",
@@ -22,61 +32,74 @@ const player2 = {
 };
 
 let activePlayer = player1;
+const makeMove = function (cell) {
+  const cellId = cell.getAttribute("id");
+  const [i, j] = cellId.split("-").slice(1).map(Number);
 
-const makeMove = function (x, y) {
-  if (board[x][y] === 0) {
-    if (x >= 0 && x < 3 && y >= 0 && y < 3) {
-      board[x][y] = activePlayer.piece;
-      activePlayer = activePlayer === player1 ? player2 : player1;
-      return board;
-    }
-  } else {
-    return "Invalid move. Cell already taken. Try again.";
+  if (cell.innerHTML === "") {
+    cell.innerHTML = activePlayer.piece;
+    boardArray[i][j] = activePlayer.piece;
+    activePlayer = activePlayer === player1 ? player2 : player1;
   }
 };
+
+// ? Below to be changed.
+
+const cells = document.querySelectorAll(".cell");
+cells.forEach((cell) => {
+  cell.addEventListener("click", function () {
+    makeMove(cell);
+    checkWinner();
+  });
+});
 
 // / Check winning condition
-const checkLine = function (a, b, c) {
-  return a !== 0 && a === b && b === c;
-};
 
 const checkWinner = function () {
-  for (let i = 0; i < 3; i++) {
-    // * Check row
-    if (checkLine(board[i][0], board[i][1], board[i][2])) {
-      return board[i][0] === "X" ? `player1 won!` : `player2 won!`;
-    }
-    // * Check column
-    if (checkLine(board[0][i], board[1][i], board[2][i])) {
-      return board[i][0] === "X" ? `player1 won!` : `player2 won!`;
-    }
-  }
-  // * Check diagnol
-  if (checkLine(board[0][0], board[1][1], board[2][2])) {
-    return board[0][0] === "X" ? `player1 won!` : `player2 won!`;
-  }
-  if (checkLine(board[2][0], board[1][1], board[0][2])) {
-    return board[2][0] === "X" ? `player1 won!` : `player2 won!`;
-  }
+  const checkLine = function (a, b, c) {
+    return a !== 0 && a === b && b === c;
+  };
 
   let draw = true;
-  // * If there's still space on the board, not a draw
+
   for (let i = 0; i < 3; i++) {
+    // Check row
+    if (checkLine(boardArray[i][0], boardArray[i][1], boardArray[i][2])) {
+      return boardArray[i][0] === "X"
+        ? alert(`player1 won!`)
+        : alert(`player2 won!`);
+    }
+
+    // Check column
+    if (checkLine(boardArray[0][i], boardArray[1][i], boardArray[2][i])) {
+      return boardArray[0][i] === "X"
+        ? alert(`player1 won!`)
+        : alert(`player2 won!`);
+    }
+
     for (let j = 0; j < 3; j++) {
-      if (board[i][j] === 0) {
+      if (boardArray[i][j] === 0) {
         draw = false;
-        break;
       }
     }
-    if (draw) {
-      break; // Exit the outer loop if an empty cell is found
-    }
   }
+
+  // Check diagonal
+  if (checkLine(boardArray[0][0], boardArray[1][1], boardArray[2][2])) {
+    return boardArray[0][0] === "X"
+      ? alert(`player1 won!`)
+      : alert(`player2 won!`);
+  }
+  if (checkLine(boardArray[2][0], boardArray[1][1], boardArray[0][2])) {
+    return boardArray[2][0] === "X"
+      ? alert(`player1 won!`)
+      : alert(`player2 won!`);
+  }
+
+  // If no winner is found, check for a draw
   if (draw) {
-    return `Draw!`;
+    return alert(`Draw!`);
   }
 
   return null;
 };
-
-// * check draw
